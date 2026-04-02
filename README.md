@@ -1,56 +1,108 @@
-# Mental Health Status Classification using NLP
+# 🧠 Mental Health Status Classification using NLP
 
-An end-to-end NLP project that classifies social media comments into 7 mental health categories (e.g., Anxiety, Depression, Stress). This project demonstrates the evolution from classical Machine Learning models to state-of-the-art Deep Learning (BERT), addressing challenges like class imbalance and semantic context.
+![Accuracy](https://img.shields.io/badge/Accuracy-83%25-brightgreen)
+![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-Transformers-orange?logo=huggingface&logoColor=white)
+![LightGBM](https://img.shields.io/badge/LightGBM-Gradient%20Boosting-9cf)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-![Accuracy](https://img.shields.io/badge/Accuracy-83%25-green) ![Python](https://img.shields.io/badge/Python-3.10-blue) ![Library](https://img.shields.io/badge/Library-HuggingFace-orange)
+An end-to-end NLP pipeline that classifies social media comments into **7 mental health categories** (Anxiety, Depression, Stress, Bipolar, PTSD, Personality Disorder, Normal). This project benchmarks classical ML against state-of-the-art Deep Learning (BERT), tackling real challenges like class imbalance and semantic ambiguity.
 
 ---
 
-## Project Overview
+## 🎯 Problem Statement
 
-Mental health analysis in social media is complex due to informal language, sarcasm, and subtle emotional nuances. This project tackles a dataset of **53,000+ real comments** to build a robust classification pipeline.
+Mental health analysis in social media is complex due to informal language, sarcasm, and subtle emotional nuances. This project processes **53,000+ real comments** to build a robust multi-class classification pipeline.
 
 **Key Objectives:**
-* Process and clean unstructured text data.
-* Address severe class imbalance (e.g., *Normal* vs *Stress*).
-* Compare the performance of classical NLP approaches vs. Transfer Learning.
+- Process and clean unstructured text data at scale
+- Address severe class imbalance (e.g., *Normal* vs *Stress*)
+- Benchmark classical NLP approaches against Transfer Learning (BERT)
 
 ---
 
-## Methodology & Tech Stack
+## 🔬 Methodology
 
-The project implements a two-phase approach to solve the classification problem:
+### Phase 1 — Classical NLP & Feature Engineering
+| Step | Detail |
+|---|---|
+| Preprocessing | Text cleaning + lemmatization via `spaCy` (`en_core_web_lg`) |
+| Vectorization | Document embeddings with `Gensim` FastText |
+| Baseline Models | Random Forest, Logistic Regression |
+| Optimized Model | LightGBM with `class_weight='balanced'` |
 
-### Phase 1: Classical NLP & Feature Engineering
-* **Preprocessing:** Text cleaning and lemmatization using `spaCy` (`en_core_web_lg`).
-* **Vectorization:** Generating document embeddings using `Gensim` (FastText).
-* **Modeling:** Evaluating baseline models (Random Forest, Logistic Regression).
-* **Optimization:** Implementing `LightGBM` with `class_weight='balanced'` to improve recall on minority classes.
-
-### Phase 2: Deep Learning (The Solution)
-* **Architecture:** Fine-tuning **BERT (bert-base-cased)** using the **Hugging Face Transformers** library.
-* **Why BERT?** To capture the bidirectional context of words, crucial for distinguishing between similar sentiments like *Anxiety* and *Stress*.
-
----
-
-## Results Summary
-
-The project showed a clear progression in performance across the tested architectures:
-
-| Model Strategy | Accuracy | Key Finding |
-| :--- | :--- | :--- |
-| **Random Forest (Baseline)** | 66% | Failed to detect minority classes (Recall for *Stress* was only 0.20). |
-| **LightGBM (Optimized)** | **71%** | `class_weight='balanced'` improved minority recall significantly. |
-| **BERT (Fine-Tuned)** | **83%** | **Best Performer.** Successfully captured semantic context, achieving high precision and recall across all 7 classes. |
-
-> **Key Insight:** While LightGBM improved the detection of imbalanced classes through weighting, it lacked semantic understanding. **BERT** bridged this gap, raising the F1-Score for difficult classes like *Stress* from 0.51 to **0.76**.
+### Phase 2 — Deep Learning (BERT)
+| Step | Detail |
+|---|---|
+| Architecture | Fine-tuned `bert-base-cased` |
+| Library | HuggingFace `Transformers` |
+| Why BERT? | Bidirectional context captures subtle differences between *Anxiety* and *Stress* |
 
 ---
 
-## How to Run this Project
+## 📊 Results
 
-This project is designed to run on **Google Colab** (specifically for the GPU requirements of BERT).
+| Model | Accuracy | Key Finding |
+|:---|:---:|:---|
+| Random Forest (Baseline) | 66% | Failed on minority classes — Recall for *Stress*: 0.20 |
+| LightGBM (Optimized) | 71% | `class_weight='balanced'` improved minority recall significantly |
+| **BERT (Fine-Tuned)** | **83%** | Best performer — F1 for *Stress* jumped from 0.51 → **0.76** |
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/Pavel-Aguilar/Mental-Health-NLP.git](https://github.com/Pavel-Aguilar/Mental-Health-NLP.git)
+> BERT bridged the semantic gap that gradient boosting couldn't — understanding context, not just word frequency.
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Tools |
+|---|---|
+| Language | Python 3.10 |
+| Classical ML | Scikit-learn, LightGBM |
+| NLP Preprocessing | spaCy, Gensim (FastText) |
+| Deep Learning | HuggingFace Transformers (BERT) |
+| Environment | Google Colab (GPU) |
+
+---
+
+## 🚀 How to Run
+
+This project is designed for **Google Colab** (GPU required for BERT fine-tuning).
+
+```bash
+git clone https://github.com/Pavel-Aguilar/Mental_Health_NLP.git
+cd Mental_Health_NLP
+```
+
+Open `mental_health_pln_(bert).py` in Colab and enable GPU runtime:
+`Runtime → Change runtime type → T4 GPU`
+
+**Install dependencies:**
+```bash
+pip install transformers torch scikit-learn lightgbm spacy gensim
+python -m spacy download en_core_web_lg
+```
+
+---
+
+## 📁 Project Structure
+
+```
+Mental_Health_NLP/
+├── mental_health_pln_(bert).py   # Full pipeline: preprocessing → BERT fine-tuning
+├── .gitignore
+└── README.md
+```
+
+---
+
+## 👤 About
+
+Built as part of the Master's in AI & Data Analytics at UACJ. Focused on applying NLP to real-world mental health data with a rigorous ML benchmarking approach.
+
+[![GitHub](https://img.shields.io/badge/GitHub-Pavel--Aguilar-181717?logo=github)](https://github.com/Pavel-Aguilar)
+
+---
+
+## 📄 License
+
+[MIT License](LICENSE)
