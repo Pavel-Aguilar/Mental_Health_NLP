@@ -1,12 +1,8 @@
 #Importaciones
-
-
 !pip install -U spacy #-U para asegurar que se utiliza la biblioteca mas reciente, de update
 !pip install -U gensim
 !pip install wordcloud
 !python -m spacy download en_core_web_lg
-
-
 #se reutilizan las bibliotecas de la practica de embeddings
 import spacy
 import gensim.downloader
@@ -69,58 +65,43 @@ print('Función de limpieza definida')
 
 """# CHECKPOINT DE **VECTORIZACION**"""
 
-# ====================================================================
-# CELDA DE PREPARACIÓN DE DATOS (Con Checkpoint "Inteligente")
-# ====================================================================
-
 ruta_checkpoint = "/content/drive/MyDrive/PDS/mental_health_pln/mental_health_LIMPIO.pkl"
 ruta_original_csv = "/content/drive/MyDrive/PDS/mental_health_pln/mental_health.csv"
 
 if os.path.exists(ruta_checkpoint):
-    # ==========================================================
-    # FASE 2: EL ARCHIVO SÍ EXISTE (Rápido)
-    # ==========================================================
     print(f"¡Checkpoint encontrado! Cargando datos limpios desde {ruta_checkpoint}...")
     df = pd.read_pickle(ruta_checkpoint)
     print("Datos limpios cargados exitosamente.")
 
-    # Cargar solo el modelo GENSIM (para vectorizar)
+    # Cargar solo el modelo GENSIM, para vectorizar
     model_gensim = gensim.downloader.load('fasttext-wiki-news-subwords-300')
     VECTOR_SIZE = model_gensim.vector_size
     print("Modelo Gensim cargado.")
 
 else:
-    # ==========================================================
-    # FASE 1: EL ARCHIVO NO EXISTE
-    # ==========================================================
-    print(f"Checkpoint no encontrado. Ejecutando la limpieza (tardará ~50 min)...")
-
+    print(f"Checkpoint no encontrado. Ejecutando la limpieza...")
     # Cargar el modelo SPACY (para limpiar)
     nlp = spacy.load("en_core_web_lg")
     stop_words_en = set(stopwords.words('english'))
     print("Modelo spaCy cargado.")
-
     # Cargar el CSV original
     df = pd.read_csv(ruta_original_csv)
-
-    # Limpieza de columnas (tu código)
+    # Limpieza de columnas
     df.drop(columns=['Unnamed: 0'], inplace=True)
     df.rename(columns={'statement': 'phrase', 'status': 'prompt'}, inplace=True)
     df['phrase'] = df['phrase'].astype(str)
     df['prompt'] = df['prompt'].astype(str)
     df = df.dropna(subset=['phrase'])
     print("CSV original cargado y limpiado.")
-
-    # --- El paso de 50 minutos ---
     print("Iniciando limpieza de spaCy...")
     df['lemas_limpios'] = df['phrase'].apply(limpiar_y_lematizar)
     print("Limpieza completada.")
 
-    # --- Guardar el checkpoint para la próxima vez ---
+    #Se guarda el checkpoint
     df.to_pickle(ruta_checkpoint)
-    print(f"¡CHECKPOINT CREADO! Datos limpios guardados en: {ruta_checkpoint}")
+    print(f"Datos limpios guardados en: {ruta_checkpoint}")
 
-    # Cargar el modelo GENSIM (necesario para el siguiente paso)
+    # Cargar el modelo GENSIM 
     model_gensim = gensim.downloader.load('fasttext-wiki-news-subwords-300')
     VECTOR_SIZE = model_gensim.vector_size
     print("Modelo Gensim cargado.")
@@ -147,7 +128,7 @@ y = le.fit_transform(df['prompt'])
 
 print(f"Forma de X (vectores): {X.shape}")
 print(f"Forma de y (etiquetas): {X.shape}")
-print("¡Preparación de datos lista! Puedes ir al modelado.")
+print("Listo para el modelado")
 
 """# EDA
 ## Gráficas
@@ -165,7 +146,7 @@ plt.tight_layout()
 plt.show()
 
 #Frecuencia y wordcloud
-print("Procesando texto para EDA (esto puede tardar en un dataset grande)...")
+print("Procesando texto para EDA...")
 listas_de_lemas = df['phrase'].apply(limpiar_y_lematizar)
 
 print("Limpieza completada. Agregando lemas...")
