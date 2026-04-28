@@ -73,11 +73,9 @@ print('Función de limpieza definida')
 # CELDA DE PREPARACIÓN DE DATOS (Con Checkpoint "Inteligente")
 # ====================================================================
 
-# --- 1. Definir la ruta del Checkpoint ---
 ruta_checkpoint = "/content/drive/MyDrive/PDS/mental_health_pln/mental_health_LIMPIO.pkl"
 ruta_original_csv = "/content/drive/MyDrive/PDS/mental_health_pln/mental_health.csv"
 
-# --- 2. La Lógica "Inteligente" ---
 if os.path.exists(ruta_checkpoint):
     # ==========================================================
     # FASE 2: EL ARCHIVO SÍ EXISTE (Rápido)
@@ -93,7 +91,7 @@ if os.path.exists(ruta_checkpoint):
 
 else:
     # ==========================================================
-    # FASE 1: EL ARCHIVO NO EXISTE (Lento - Correr 1 vez)
+    # FASE 1: EL ARCHIVO NO EXISTE
     # ==========================================================
     print(f"Checkpoint no encontrado. Ejecutando la limpieza (tardará ~50 min)...")
 
@@ -152,10 +150,8 @@ print(f"Forma de y (etiquetas): {X.shape}")
 print("¡Preparación de datos lista! Puedes ir al modelado.")
 
 """# EDA
-
 ## Gráficas
 """
-
 print(df.info())
 separador()
 print(f"\nNúmero de clases únicas: {df['prompt'].nunique()}")
